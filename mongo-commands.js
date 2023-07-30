@@ -147,14 +147,39 @@ db.orders.aggregate([
   { $match: { status: "urgent" } },
   {
     $group: {
-      productname: "$productName",
+      _id: "$productName",
       totalUrgentQuantity: { $sum: "$quantity" },
     },
   },
 ]);
 
 //Task
-//1. update the language for all documents -  English
-//2. update the username from Jay to Peter
+//1. update the language for all documents -  English ✅
+
+db.dashboard.updateMany({}, { $set: { language: "English" } });
+
+db.dashboard.find().pretty();
+
+//2. update the username from Jay to Peter  ✅
+
+db.dashboard.updateOne({ username: "Jay" }, { $set: { username: "Peter" } });
+
+db.dashboard.findOne({ username: "Jay" });
+
+db.dashboard.find({ username: "Jay" });
+
 //3. update correct email id for all documents
-// 4. delete all users with rating below 23
+
+db.dashboard.updateMany({}, { $set: { email: "abc@gmail.com" } });
+
+// 4. delete all users with age below 26
+db.dashboard.find({ age: { $lt: 26 } }).pretty();
+
+db.dashboard.deleteOne({ age: { $lt: 26 } });
+
+db.dashboard.deleteMany({ age: { $lt: 26 } });
+
+//count
+db.dashboard.count();
+
+db.orders.count();
