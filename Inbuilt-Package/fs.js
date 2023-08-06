@@ -28,7 +28,7 @@ const quote2 = "Live more, worry less 🥳🥳";
 
 const quote3 = "Happy Day";
 
-const [, , noOfFiles] = process.argv;
+// const [, , noOfFiles] = process.argv;
 // console.log(noOfFiles);
 
 // for (let i = 1; i <= noOfFiles; i++) {
@@ -52,7 +52,32 @@ const niceQuote = "\nMake everyday a little less ordinarily";
 //   console.log("Completed writing nice.txt");
 // });
 
-fs.unlink("./toRemove.txt", (err) => {
-  console.log("Deleted Successfully");
+// fs.unlink("./toRemove.txt", (err) => {
+//   console.log("Deleted Successfully");
+// });
+
+// fs.readdir("./backup", (err, files) => {
+//   console.log("All file names", files);
+// });
+
+//Delete all the files in backup folder
+
+fs.readdir("./backup", (err, data) => {
+  data.forEach((fileName) => {
+    fs.unlink(`./backup/${fileName}`, (err) => {
+      console.log("Deleted Successfully ", fileName);
+    });
+  });
 });
 
+// writeFile => CallStack => WebApi(whoever finishes writing first) => CallBack Queue => CallStack
+
+// fs.writeFile, fs.readFile, fs.appendFile - async;
+// fs.writeFileSync, fs.readFileSync, fs.appendFileSync - sync;
+
+const [, , noOfFiles] = process.argv;
+
+for (let i = 1; i <= noOfFiles; i++) {
+  fs.writeFileSync(`./backup/note-${i}.txt`, quote3);
+  console.log(`Completed writing note-${i}.txt`);
+}
