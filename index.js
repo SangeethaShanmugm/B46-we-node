@@ -2,6 +2,8 @@
 // const { MongoClient } = require("mongodb");
 import express from "express";
 import { MongoClient } from "mongodb";
+import * as dotenv from "dotenv";
+dotenv.config();
 const app = express();
 const PORT = 9000;
 // req ->  what we request/send to server
@@ -126,7 +128,15 @@ const bookList = [
   },
 ];
 
-const MONGO_URL = "mongodb://127.0.0.1:27017";
+const MONGO_URL = process.env.MONGO_URL;
+
+// console.log(process.env.MONGO_URL);
+
+// "mongodb://127.0.0.1:27017";
+
+//Inbuilt Middleware
+//interceptor | converting body to JSON
+app.use(express.json());
 
 //mongodb://localhost:27017
 
@@ -197,8 +207,41 @@ app.get("/books/:id", async (req, res) => {
   const book = await client
     .db("b46-we")
     .collection("books")
-    .findOne({ id: "1" });
+    .findOne({ id: id });
+  book ? res.send(book) : res.status(404).send({ message: "No Book Found" });
+});
+
+//delete book by ID
+app.delete("/books/:id", async (req, res) => {
+  const { id } = req.params;
+  const book = await client
+    .db("b46-we")
+    .collection("books")
+    .deleteOne({ id: id });
   res.send(book);
+});
+
+//add books
+app.post("/books", async (req, res) => {
+  const newBooks = req.body;
+  console.log(newBooks);
+  const result = await client
+    .db("b46-we")
+    .collection("books")
+    .insertMany(newBooks);
+  res.send(result);
+});
+
+//update books by ID
+
+app.put("/books/:id", async (req, res) => {
+  const { id } = req.params;
+  const updatedBooks = req.body;
+  const result = await client
+    .db("b46-we")
+    .collection("books")
+    .updateOne({ id: id }, { $set: updatedBooks });
+  res.send(result);
 });
 
 app.listen(PORT, () => console.log("Server started on the PORT", PORT));
