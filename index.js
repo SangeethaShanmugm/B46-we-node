@@ -1,4 +1,7 @@
-const express = require("express");
+// const express = require("express");
+// const { MongoClient } = require("mongodb");
+import express from "express";
+import { MongoClient } from "mongodb";
 const app = express();
 const PORT = 9000;
 // req ->  what we request/send to server
@@ -123,6 +126,21 @@ const bookList = [
   },
 ];
 
+const MONGO_URL = "mongodb://127.0.0.1:27017";
+
+//mongodb://localhost:27017
+
+//mongodb connection
+
+async function createConnection() {
+  const client = new MongoClient(MONGO_URL);
+  await client.connect();
+  console.log("MongoDB is connected");
+  return client;
+}
+
+const client = await createConnection();
+
 //REST API endpoints
 
 app.get("/", (req, res) => {
@@ -145,15 +163,41 @@ app.get("/userList/:id", (req, res) => {
 //books
 
 //Task
-// /books => get all books
+// /books => get all books ✅
 // /books?language=English => only english books ✅
-// /books?language=English&rating=8.8  => filter by language & rating
-// /books?rating=8.8  => filter by rating
+// /books?language=English&rating=8.8  => filter by language & rating ✅
+// /books?rating=8.8  => filter by rating ✅
 
-app.get("/books", (req, res) => {
-  const { language } = req.query;
+app.get("/books", async (req, res) => {
+  const { language, rating } = req.query;
   console.log(req.query, language);
-  const book = bookList.filter((bk) => bk.language == language);
+  // let filteredBook = bookList; //copy by reference
+  // if (req.query.language) {
+  //   // filteredBook = filteredBook.filter((bk) => bk.language == language);
+  //   req.query.language = req.query.language;
+  // }
+  if (req.query.rating) {
+    // filteredBook = filteredBook.filter((bk) => bk.rating == rating);
+    req.query.rating = +req.query.rating;
+  }
+  const book = await client
+    .db("b46-we")
+    .collection("books")
+    .find(req.query)
+    .toArray();
+  res.send(book);
+});
+
+//get book by ID
+app.get("/books/:id", async (req, res) => {
+  const { id } = req.params;
+  console.log(req.params, id);
+  // const book = bookList.find((usr) => usr.id == id);
+  // db.books.findOne({ id: "1" });
+  const book = await client
+    .db("b46-we")
+    .collection("books")
+    .findOne({ id: "1" });
   res.send(book);
 });
 
