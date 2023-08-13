@@ -22,3 +22,9 @@ export async function updateBooksByID(id, updatedBooks) {
     .collection("books")
     .updateOne({ id: id }, { $set: updatedBooks });
 }
+
+//movies
+
+export async function getAllMovies(req) {
+  return await client.db("IMDB-movies").collection("movies").find({}).toArray();
+}
