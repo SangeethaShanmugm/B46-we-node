@@ -3,10 +3,12 @@
 import express from "express";
 import { MongoClient } from "mongodb";
 import * as dotenv from "dotenv";
+import cors from "cors";
 import { booksRouter } from "./routes/books.js";
 dotenv.config();
 const app = express();
 const PORT = 9000;
+app.use(cors());
 // req ->  what we request/send to server
 // res => wat we receive from server
 
