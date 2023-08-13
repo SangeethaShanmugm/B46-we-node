@@ -26,3 +26,21 @@ min: It gets the minimum value from all the documents
 max: It gets the maximum value from all the documents
 first: It gets the first document from the grouping
 last: It gets the last document from the grouping
+
+
+//books
+
+//Task
+// /books => get all books ✅
+// /books?language=English => only english books ✅
+// /books?language=English&rating=8.8  => filter by language & rating ✅
+// /books?rating=8.8  => filter by rating ✅
+
+
+
+ // let filteredBook = bookList; //copy by reference
+  // if (req.query.language) {
+  //   // filteredBook = filteredBook.filter((bk) => bk.language == language);
+  //   req.query.language = req.query.language;
+  // }
+  
